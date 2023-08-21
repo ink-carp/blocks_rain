@@ -469,20 +469,26 @@ impl Game {
     fn run(&mut self){
         
         self.game_board.init();
+        self.game_board.draw_next_block(self.next_block_type);
+        self.game_board.draw_score(0);
+        self.game_board.draw_speed(5);
         let mut score:u32 = 0;//max 500
         let mut speed:u32 = 5;
         let mut total_time = 100;
         let mut highest_raw = self.game_board.raws-1;
         loop {
+            let mut flag = false;
             if total_time <= speed{
                 self.game_board.blocks_position.1+=1;
                 total_time = 100;
+                flag=true;
             }
             else {
                 total_time-=speed;
                 let key = self.get_key_input_from_stdin();
                 if key < 4{
                     self.game_board.mov(key);
+                    flag = true;
                 }
             }
             if self.game_board.is_bottom(){
@@ -510,12 +516,16 @@ impl Game {
                 self.next_block_type = BlockType::random_type(self.pcg.get_round(6));
                 self.game_board.blocks_position.0 = ((self.game_board.columns-10)/2-4)/2;
                 self.game_board.blocks_position.1 = 1;
+
+                self.game_board.draw_next_block(self.next_block_type);
+                self.game_board.draw_score(score);
+                self.game_board.draw_speed(speed);
+                flag = true;
             }
-            self.game_board.draw_next_block(self.next_block_type);
-            self.game_board.draw_score(score);
-            self.game_board.draw_speed(speed);
-            self.game_board.draw();
-            std::thread::sleep(std::time::Duration::from_millis(20));
+            if flag{
+                self.game_board.draw();
+            }
+            std::thread::sleep(std::time::Duration::from_millis(50));
         }
         reset();
         hide_cursor(false);

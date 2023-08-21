@@ -1,6 +1,6 @@
 [package]
 name = "block_rain"
-version = "0.1.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["ink-carp <18020970773@163.com>"]
 
